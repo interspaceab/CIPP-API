@@ -15,11 +15,20 @@ env:
 jobs:
   deploy:
     runs-on: windows-latest
-    
+    permissions:
+      id-token: write #This is required for requesting the JWT
+
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
       
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7AA77710F424434C8AA0CB7602EFE97B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_39697699E06B403C9E0A326D122238AE }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C2F7181F096C4D6C97DE5DE0D6A4510A }}
+
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa
@@ -27,4 +36,4 @@ jobs:
           app-name: 'cippyyqn6'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_65E2D49420B44248BFC9F85664C420F6 }}
+          
